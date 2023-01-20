@@ -5,10 +5,27 @@
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
+#include "Camera/CameraComponent.h"
+#include "GameFramework/SpringArmComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 AMainCharacter::AMainCharacter()
 {
 	PrimaryActorTick.bCanEverTick = true;
+	
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationRoll = false;
+	
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0.f, 400.f, 0.f);
+
+	CameraBoom = CreateDefaultSubobject<USpringArmComponent>(TEXT("CameraBoom"));
+	CameraBoom->SetupAttachment(GetRootComponent());
+	CameraBoom->TargetArmLength = 300.f;
+
+	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
+	FollowCamera->SetupAttachment(CameraBoom);
 }
 
 void AMainCharacter::BeginPlay()
@@ -47,7 +64,7 @@ void AMainCharacter::Move(const FInputActionValue& Value)
 
 	if (GetController())
 	{
-		const FRotator Rotation = GetController()->GetControlRotation();
+		const FRotator Rotation = GetControlRotation();
 		const FRotator YawRotation(0.f, Rotation.Yaw, 0.f);
 
 		const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
@@ -67,10 +84,7 @@ void AMainCharacter::Move(const FInputActionValue& Value)
 void AMainCharacter::Look(const FInputActionValue& Value)
 {
 	const FVector2D LookAxisValue = Value.Get<FVector2D>();
-
-	if (GetController())
-	{                                               
-		AddControllerYawInput(LookAxisValue.X);
-		AddControllerPitchInput(LookAxisValue.Y);
-	}
+	
+	AddControllerYawInput(LookAxisValue.X);
+	AddControllerPitchInput(LookAxisValue.Y);
 }
