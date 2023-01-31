@@ -38,6 +38,12 @@ protected:
 		int32 OtherBodyIndex
 	);
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> ItemMesh;
+
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<USphereComponent> AreaSphere;
+
 private:
 	UFUNCTION(BlueprintPure)
 	float TransformedSin();
@@ -48,12 +54,6 @@ private:
 	template<typename T>
 	T Avg(T First, T Second);
 
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<UStaticMeshComponent> ItemMesh;
-
-	UPROPERTY(VisibleAnywhere)
-	TObjectPtr<USphereComponent> AreaSphere;
-	
 public:
 	UPROPERTY(VisibleInstanceOnly)
 	float RunningTime { 0.f };
