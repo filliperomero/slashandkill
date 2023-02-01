@@ -7,6 +7,7 @@
 #include "InputActionValue.h"
 #include "MainCharacter.generated.h"
 
+class AItem;
 class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
@@ -22,6 +23,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
+	void InteractPressed();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -37,6 +39,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> JumpAction;
+	
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> InteractAction;
 
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
@@ -48,6 +53,10 @@ private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UCameraComponent> FollowCamera;
 
-public:	
+	UPROPERTY(VisibleInstanceOnly)
+	TObjectPtr<AItem> OverlappingItem;
+
+public:
+	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	
 };

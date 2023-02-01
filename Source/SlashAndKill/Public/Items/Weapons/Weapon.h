@@ -14,6 +14,9 @@ class SLASHANDKILL_API AWeapon : public AItem
 {
 	GENERATED_BODY()
 
+public:
+	void Equip(USceneComponent* InParent, FName InSocketName);
+
 protected:
 	virtual void OnSphereOverlap(
 		UPrimitiveComponent* OverlappedComponent,
@@ -30,5 +33,9 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex
 	) override;
+
+private:
+
+public:
 	
 };

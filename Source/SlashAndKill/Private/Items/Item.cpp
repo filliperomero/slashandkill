@@ -2,6 +2,8 @@
 
 
 #include "Items/Item.h"
+
+#include "Characters/MainCharacter.h"
 #include "Components/SphereComponent.h"
 
 AItem::AItem()
@@ -27,20 +29,20 @@ void AItem::BeginPlay()
 void AItem::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	const FString OtherActorName = OtherActor->GetName();
-	if (GEngine)
+	AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MainCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(1, 30.f, FColor::Red, OtherActorName);
+		MainCharacter->SetOverlappingItem(this);
 	}
 }
 
 void AItem::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	const FString OtherActorName = FString("Ending Overlap with: ") + OtherActor->GetName();
-	if (GEngine)
+	AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
+	if (MainCharacter)
 	{
-		GEngine->AddOnScreenDebugMessage(2, 30.f, FColor::Blue, OtherActorName);
+		MainCharacter->SetOverlappingItem(nullptr);
 	}
 }
 
