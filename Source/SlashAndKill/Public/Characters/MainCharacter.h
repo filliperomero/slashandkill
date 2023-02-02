@@ -13,6 +13,7 @@ class UInputMappingContext;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
+class UAnimMontage;
 
 UCLASS()
 class SLASHANDKILL_API AMainCharacter : public ACharacter
@@ -25,6 +26,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 	void InteractPressed();
+	void Attack();
 	
 protected:
 	virtual void BeginPlay() override;
@@ -44,6 +46,9 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> InteractAction;
 
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> AttackAction;
+
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 
@@ -58,6 +63,13 @@ private:
 	TObjectPtr<AItem> OverlappingItem;
 	
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	/**
+	 * Animation Montages
+	 */
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> AttackMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
