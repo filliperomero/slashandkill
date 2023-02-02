@@ -25,9 +25,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
-	void InteractPressed();
-	void Attack();
-	
+
 protected:
 	virtual void BeginPlay() override;
 
@@ -49,8 +47,20 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> AttackAction;
 
+	/**
+	 * Callbacks for input
+	 */
+	
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
+	void InteractPressed();
+	void Attack();
+
+	/**
+	 * Play montage functions
+	 */
+	
+	void PlayAttackMontage();
 
 private:
 	UPROPERTY(VisibleAnywhere)

@@ -83,15 +83,19 @@ void AMainCharacter::InteractPressed()
 
 void AMainCharacter::Attack()
 {
+	PlayAttackMontage();
+}
+
+void AMainCharacter::PlayAttackMontage()
+{
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	if (AnimInstance && AttackMontage)
-	{
-		AnimInstance->Montage_Play(AttackMontage);
-		const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num());
-		const FName SectionName = AttackMontage->GetSectionName(Selection);
-		AnimInstance->Montage_JumpToSection(SectionName);
-	}
+	if (AnimInstance == nullptr || AttackMontage == nullptr) return;
+	
+	AnimInstance->Montage_Play(AttackMontage);
+	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num());
+	const FName SectionName = AttackMontage->GetSectionName(Selection);
+	AnimInstance->Montage_JumpToSection(SectionName);
 }
 
 void AMainCharacter::Move(const FInputActionValue& Value)
