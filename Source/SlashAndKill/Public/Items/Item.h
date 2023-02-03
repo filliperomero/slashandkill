@@ -8,6 +8,12 @@
 
 class USphereComponent;
 
+enum class EItemState : uint8
+{
+	EIS_Hovering,
+	EIS_Equipped
+};
+
 UCLASS()
 class SLASHANDKILL_API AItem : public AActor
 {
@@ -43,6 +49,8 @@ protected:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USphereComponent> AreaSphere;
+
+	EItemState ItemState = EItemState::EIS_Hovering;
 
 private:
 	UFUNCTION(BlueprintPure)

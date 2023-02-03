@@ -113,6 +113,8 @@ void AMainCharacter::AttackEnd()
 
 void AMainCharacter::Move(const FInputActionValue& Value)
 {
+	if (ActionState == EActionState::EAS_Attacking) return;
+	
 	const FVector2D DirectionVector = Value.Get<FVector2D>();
 
 	if (GetController())
