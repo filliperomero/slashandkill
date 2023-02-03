@@ -62,6 +62,11 @@ protected:
 	
 	void PlayAttackMontage();
 
+	UFUNCTION(BlueprintCallable)
+	void AttackEnd();
+
+	bool CanAttack() const;
+
 private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -73,6 +78,9 @@ private:
 	TObjectPtr<AItem> OverlappingItem;
 	
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
+
+	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
+	EActionState ActionState = EActionState::EAS_Unoccupied;
 
 	/**
 	 * Animation Montages

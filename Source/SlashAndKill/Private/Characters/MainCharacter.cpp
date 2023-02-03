@@ -83,7 +83,15 @@ void AMainCharacter::InteractPressed()
 
 void AMainCharacter::Attack()
 {
+	if (!CanAttack()) return;
+	
 	PlayAttackMontage();
+	ActionState = EActionState::EAS_Attacking;
+}
+
+bool AMainCharacter::CanAttack() const
+{
+	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
 }
 
 void AMainCharacter::PlayAttackMontage()
@@ -96,6 +104,11 @@ void AMainCharacter::PlayAttackMontage()
 	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num());
 	const FName SectionName = AttackMontage->GetSectionName(Selection);
 	AnimInstance->Montage_JumpToSection(SectionName);
+}
+
+void AMainCharacter::AttackEnd()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 void AMainCharacter::Move(const FInputActionValue& Value)
