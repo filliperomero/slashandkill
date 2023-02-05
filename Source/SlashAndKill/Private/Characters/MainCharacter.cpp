@@ -71,14 +71,37 @@ void AMainCharacter::Jump()
 
 void AMainCharacter::InteractPressed()
 {
-	if (OverlappingItem == nullptr) return;
-	
 	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
 	if (OverlappingWeapon)
 	{
 		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"));
 		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		EquippedWeapon = OverlappingWeapon;
+		OverlappingItem = nullptr;
 	}
+	else
+	{
+		if (CanDisarm())
+		{
+			PlayEquipMontage(FName("Unequip"));
+			CharacterState = ECharacterState::ECS_Unequipped;
+		}
+		else if (CanArm())
+		{
+			PlayEquipMontage(FName("Equip"));
+			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+		}
+	}
+}
+
+bool AMainCharacter::CanDisarm() const
+{
+	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
+}
+
+bool AMainCharacter::CanArm() const
+{
+	return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
 }
 
 void AMainCharacter::Attack()
@@ -103,7 +126,18 @@ void AMainCharacter::PlayAttackMontage()
 	AnimInstance->Montage_Play(AttackMontage);
 	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num());
 	const FName SectionName = AttackMontage->GetSectionName(Selection);
-	AnimInstance->Montage_JumpToSection(SectionName);
+	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+}
+
+void AMainCharacter::PlayEquipMontage(const FName SectionName)
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	
+	if (AnimInstance == nullptr || EquipMontage == nullptr) return;
+
+	
+	AnimInstance->Montage_Play(EquipMontage);
+	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
 }
 
 void AMainCharacter::AttackEnd()
