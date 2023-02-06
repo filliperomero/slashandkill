@@ -85,11 +85,13 @@ void AMainCharacter::InteractPressed()
 		{
 			PlayEquipMontage(FName("Unequip"));
 			CharacterState = ECharacterState::ECS_Unequipped;
+			ActionState = EActionState::EAS_EquippingWeapon;
 		}
 		else if (CanArm())
 		{
 			PlayEquipMontage(FName("Equip"));
 			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+			ActionState = EActionState::EAS_EquippingWeapon;
 		}
 	}
 }
@@ -102,6 +104,25 @@ bool AMainCharacter::CanDisarm() const
 bool AMainCharacter::CanArm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
+}
+
+void AMainCharacter::Disarm()
+{
+	if (EquippedWeapon == nullptr) return;
+
+	EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
+}
+
+void AMainCharacter::Arm()
+{
+	if (EquippedWeapon == nullptr) return;
+
+	EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("RightHandSocket"));
+}
+
+void AMainCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
 }
 
 void AMainCharacter::Attack()
@@ -147,7 +168,7 @@ void AMainCharacter::AttackEnd()
 
 void AMainCharacter::Move(const FInputActionValue& Value)
 {
-	if (ActionState == EActionState::EAS_Attacking) return;
+	if (ActionState != EActionState::EAS_Unoccupied) return;
 	
 	const FVector2D DirectionVector = Value.Get<FVector2D>();
 
