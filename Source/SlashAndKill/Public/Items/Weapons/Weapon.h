@@ -6,6 +6,8 @@
 #include "Items/Item.h"
 #include "Weapon.generated.h"
 
+class USoundBase;
+
 /**
  * 
  */
@@ -36,6 +38,8 @@ protected:
 	) override;
 
 private:
+	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
+	TObjectPtr<USoundBase> EquipSound; 
 
 public:
 	

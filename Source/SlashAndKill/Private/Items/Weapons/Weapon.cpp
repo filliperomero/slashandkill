@@ -3,11 +3,23 @@
 
 #include "Items/Weapons/Weapon.h"
 #include "Characters/MainCharacter.h"
+#include "Components/SphereComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName)
 {
 	AttachMeshToSocket(InParent, InSocketName);
 	ItemState = EItemState::EIS_Equipped;
+
+	if (EquipSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
+	}
+
+	if (AreaSphere)
+	{
+		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	}
 }
 
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
