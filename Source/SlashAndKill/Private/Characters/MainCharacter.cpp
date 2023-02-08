@@ -11,6 +11,7 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
+#include "Components/BoxComponent.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -67,6 +68,13 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMainCharacter::Jump()
 {
 	Super::Jump();
+}
+
+void AMainCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
+{
+	if (EquippedWeapon == nullptr || EquippedWeapon->GetWeaponBox() == nullptr) return;
+	
+	EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
 }
 
 void AMainCharacter::InteractPressed()

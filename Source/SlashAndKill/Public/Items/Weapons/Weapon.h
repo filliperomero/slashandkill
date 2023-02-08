@@ -74,5 +74,6 @@ private:
 	TObjectPtr<USceneComponent> TraceEndComponent;
 
 public:
+	FORCEINLINE UBoxComponent* GetWeaponBox() const { return WeaponBox; }
 	
 };
