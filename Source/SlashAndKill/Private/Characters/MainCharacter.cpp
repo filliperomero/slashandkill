@@ -75,6 +75,7 @@ void AMainCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type Collision
 	if (EquippedWeapon == nullptr || EquippedWeapon->GetWeaponBox() == nullptr) return;
 	
 	EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
+	EquippedWeapon->IgnoreActors.Empty();
 }
 
 void AMainCharacter::InteractPressed()

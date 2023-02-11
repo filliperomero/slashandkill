@@ -18,6 +18,7 @@ public:
 	AEnemy();
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	void DirectionalHitReact(const FVector& ImpactPoint);
 
 	virtual void GetHit(const FVector& ImpactPoint) override;
 	

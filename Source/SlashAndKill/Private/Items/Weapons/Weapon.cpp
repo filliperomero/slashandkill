@@ -75,6 +75,11 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this); // Ignore itself
 
+	for (AActor* Actor : IgnoreActors)
+	{
+		ActorsToIgnore.AddUnique(Actor);
+	}
+
 	FHitResult WeaponBoxHit;
 
 	// Box Trace Single will basically trace for visibility. This is why we put any ETraceTypeQuery
@@ -100,6 +105,7 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		{
 			HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
 		}
+		IgnoreActors.AddUnique(WeaponBoxHit.GetActor());
 	}
 }
 
