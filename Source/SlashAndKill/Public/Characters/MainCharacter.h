@@ -71,7 +71,7 @@ protected:
 
 	bool CanAttack() const;
 
-	void PlayEquipMontage(const FName SectionName);
+	void PlayEquipMontage(const FName& SectionName);
 	bool CanDisarm() const;
 	bool CanArm() const;
 

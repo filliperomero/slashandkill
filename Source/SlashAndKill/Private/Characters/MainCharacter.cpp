@@ -158,7 +158,7 @@ void AMainCharacter::PlayAttackMontage()
 	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 }
 
-void AMainCharacter::PlayEquipMontage(const FName SectionName)
+void AMainCharacter::PlayEquipMontage(const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	
