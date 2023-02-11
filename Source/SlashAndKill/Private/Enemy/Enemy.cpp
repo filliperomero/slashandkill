@@ -5,6 +5,7 @@
 
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
+#include "Kismet/GameplayStatics.h"
 #include "SlashAndKill/DebugMacros.h"
 // #include "Kismet/KismetSystemLibrary.h"
 
@@ -44,6 +45,11 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 void AEnemy::GetHit(const FVector& ImpactPoint)
 {
 	DirectionalHitReact(ImpactPoint);
+	
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+	}
 }
 
 void AEnemy::DirectionalHitReact(const FVector& ImpactPoint)

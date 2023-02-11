@@ -8,6 +8,7 @@
 #include "Enemy.generated.h"
 
 class UAnimMontage;
+class USoundBase;
 
 UCLASS()
 class SLASHANDKILL_API AEnemy : public ACharacter, public IHitInterface
@@ -38,6 +39,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditAnywhere, Category = Sounds)
+	TObjectPtr<USoundBase> HitSound;
 	
 public:
 
