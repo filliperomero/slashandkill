@@ -62,6 +62,9 @@ protected:
 		int32 OtherBodyIndex
 	);
 
+	UFUNCTION(BlueprintImplementableEvent)
+	void CreateFields(const FVector& FieldLocation);
+
 private:
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	TObjectPtr<USoundBase> EquipSound;
