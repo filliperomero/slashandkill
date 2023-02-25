@@ -23,5 +23,7 @@ class SLASHANDKILL_API IHitInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// Setting to 0 Makes the function a pure virtual function, which is a function that cannot be implemented in the class in which it was declared
-	virtual void GetHit(const FVector& ImpactPoint) = 0;
+	// virtual void GetHit(const FVector& ImpactPoint) = 0;
+	UFUNCTION(BlueprintNativeEvent)
+	void GetHit(const FVector& ImpactPoint);
 };

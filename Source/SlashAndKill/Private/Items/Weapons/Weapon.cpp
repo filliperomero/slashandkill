@@ -103,7 +103,8 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		// This make sure that our actor implements the interface we're checking
 		if (HitInterface)
 		{
-			HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
+			// HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
+			HitInterface->Execute_GetHit(WeaponBoxHit.GetActor(), WeaponBoxHit.ImpactPoint);
 		}
 		IgnoreActors.AddUnique(WeaponBoxHit.GetActor());
 

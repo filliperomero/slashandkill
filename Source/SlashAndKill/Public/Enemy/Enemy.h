@@ -20,7 +20,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	void DirectionalHitReact(const FVector& ImpactPoint);
 
-	virtual void GetHit(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	
 protected:
 	virtual void BeginPlay() override;
