@@ -32,5 +32,8 @@ private:
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	TObjectPtr<USoundBase> PickupSound;
 
+	UPROPERTY(EditAnywhere, Category = "Treasure Properties")
+	int32 GoldAmount { 0 };
+
 public:
 };
