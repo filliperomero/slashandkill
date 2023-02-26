@@ -154,7 +154,7 @@ void AMainCharacter::PlayAttackMontage()
 	if (AnimInstance == nullptr || AttackMontage == nullptr) return;
 	
 	AnimInstance->Montage_Play(AttackMontage);
-	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num());
+	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num() - 1);
 	const FName SectionName = AttackMontage->GetSectionName(Selection);
 	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 }
@@ -164,7 +164,6 @@ void AMainCharacter::PlayEquipMontage(const FName& SectionName)
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 	
 	if (AnimInstance == nullptr || EquipMontage == nullptr) return;
-
 	
 	AnimInstance->Montage_Play(EquipMontage);
 	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
