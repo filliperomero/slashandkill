@@ -7,6 +7,8 @@
 #include "Interfaces/HitInterface.h"
 #include "BreakableActor.generated.h"
 
+class UCapsuleComponent;
+class ATreasure;
 class UGeometryCollectionComponent;
 
 UCLASS()
@@ -23,9 +25,15 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-private:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UGeometryCollectionComponent> GeometryCollection;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCapsuleComponent> Capsule;
+
+private:
+	UPROPERTY(EditAnywhere, Category = "Breakable Properties")
+	TSubclassOf<ATreasure> TreasureClass;
 	
 public:	
 
