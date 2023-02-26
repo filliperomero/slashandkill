@@ -11,6 +11,7 @@ class USphereComponent;
 enum class EItemState : uint8
 {
 	EIS_Hovering,
+	EIS_Unequipped,
 	EIS_Equipped
 };
 
