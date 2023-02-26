@@ -36,13 +36,17 @@ void ABreakableActor::Tick(float DeltaTime)
 
 void ABreakableActor::GetHit_Implementation(const FVector& ImpactPoint)
 {
+	if (bBroken) return;
+	
+	bBroken = true;222222222222
+	
 	UWorld* World = GetWorld();
 	if (World && TreasureClasses.Num() > 0)
 	{
 		const int32 RandomSelection = FMath::RandRange(0, TreasureClasses.Num() - 1);
-		
 		World->SpawnActor<ATreasure>(TreasureClasses[RandomSelection], GetActorLocation(), GetActorRotation());
 	}
-	
+
+	Capsule->SetCollisionResponseToChannel(ECollisionChannel::ECC_Pawn, ECollisionResponse::ECR_Ignore);
 }
 
