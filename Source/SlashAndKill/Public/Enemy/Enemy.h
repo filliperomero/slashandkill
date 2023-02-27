@@ -7,6 +7,7 @@
 #include "Interfaces/HitInterface.h"
 #include "Enemy.generated.h"
 
+class UAttributeComponent;
 class UAnimMontage;
 
 UCLASS()
@@ -32,6 +33,9 @@ protected:
 	void PlayHitReactMontage(const FName& SectionName);
 
 private:
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UAttributeComponent> Attributes;
+	
 	/**
 	 * Animation Montages
 	 */

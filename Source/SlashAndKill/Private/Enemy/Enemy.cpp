@@ -3,6 +3,7 @@
 
 #include "Enemy/Enemy.h"
 
+#include "Components/AttributeComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -25,6 +26,8 @@ AEnemy::AEnemy()
 	{
 		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 	}
+
+	Attributes = CreateDefaultSubobject<UAttributeComponent>(TEXT("Attributes"));
 }
 
 void AEnemy::BeginPlay()
