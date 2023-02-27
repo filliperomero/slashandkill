@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 #include "Item.generated.h"
 
+class UNiagaraComponent;
 class USphereComponent;
 
 enum class EItemState : uint8
@@ -52,6 +53,9 @@ protected:
 	TObjectPtr<USphereComponent> AreaSphere;
 
 	EItemState ItemState = EItemState::EIS_Hovering;
+
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	TObjectPtr<UNiagaraComponent> EmbersEffect;
 
 private:
 	UFUNCTION(BlueprintPure)
