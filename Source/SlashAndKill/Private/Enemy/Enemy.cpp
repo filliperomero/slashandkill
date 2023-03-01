@@ -50,7 +50,14 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
-	DirectionalHitReact(ImpactPoint);
+	if (Attributes && Attributes->IsAlive())
+	{
+		DirectionalHitReact(ImpactPoint);
+	}
+	else
+	{
+		Die();
+	}
 	
 	if (HitSound)
 	{
@@ -61,6 +68,49 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 	{
 		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, ImpactPoint);
 	}
+}
+
+void AEnemy::Die()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr || DeathMontage == nullptr) return;
+	
+	AnimInstance->Montage_Play(DeathMontage);
+	const int32 Selection = FMath::RandRange(0, 5);
+	FName SectionName = FName();
+
+	switch(Selection)
+	{
+	case 0:
+		SectionName = FName("Death1");
+		DeathPose = EDeathPose::EDP_Death01;
+		break;
+	case 1:
+		SectionName = FName("Death2");
+		DeathPose = EDeathPose::EDP_Death02;
+		break;
+	case 2:
+		SectionName = FName("Death3");
+		DeathPose = EDeathPose::EDP_Death03;
+		break;
+	case 3:
+		SectionName = FName("Death4");
+		DeathPose = EDeathPose::EDP_Death04;
+		break;
+	case 4:
+		SectionName = FName("Death5");
+		DeathPose = EDeathPose::EDP_Death05;
+		break;
+	case 5:
+		SectionName = FName("Death6");
+		DeathPose = EDeathPose::EDP_Death06;
+		break;
+	default:
+		SectionName = FName("Death1");
+		DeathPose = EDeathPose::EDP_Death01;
+	}
+	AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,

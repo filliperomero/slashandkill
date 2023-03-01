@@ -108,6 +108,14 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 
 	if (WeaponBoxHit.GetActor())
 	{
+		UGameplayStatics::ApplyDamage(
+			WeaponBoxHit.GetActor(),
+			Damage,
+			GetInstigator()->GetController(),
+			this,
+			UDamageType::StaticClass()
+		);
+		
 		IHitInterface* HitInterface = Cast<IHitInterface>(WeaponBoxHit.GetActor());
 		// This make sure that our actor implements the interface we're checking
 		if (HitInterface)
@@ -118,14 +126,6 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 		IgnoreActors.AddUnique(WeaponBoxHit.GetActor());
 
 		CreateFields(WeaponBoxHit.ImpactPoint);
-
-		UGameplayStatics::ApplyDamage(
-			WeaponBoxHit.GetActor(),
-			Damage,
-			GetInstigator()->GetController(),
-			this,
-			UDamageType::StaticClass()
-		);
 	}
 }
 
