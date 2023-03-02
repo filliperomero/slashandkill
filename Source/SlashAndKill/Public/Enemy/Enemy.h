@@ -37,6 +37,7 @@ protected:
 	 */
 	
 	void PlayHitReactMontage(const FName& SectionName);
+	void PlayDeathMontage();
 
 private:
 	UPROPERTY(VisibleAnywhere)
@@ -44,7 +45,13 @@ private:
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UHealthBarComponent> HealthBarWidget;
-		
+
+	UPROPERTY()
+	TObjectPtr<AActor> CombatTarget;
+
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
+			
 	/**
 	 * Animation Montages
 	 */

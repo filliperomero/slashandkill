@@ -36,11 +36,30 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
+
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetVisibility(false);
+	}
 }
 
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	if (CombatTarget)
+	{
+		const double DistanceToTarget = (CombatTarget->GetActorLocation() - GetActorLocation()).Size();
+
+		if (DistanceToTarget > CombatRadius)
+		{
+			CombatTarget = nullptr;
+			if (HealthBarWidget)
+			{
+				HealthBarWidget->SetVisibility(false);
+			}
+		}
+	}
 }
 
 void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
@@ -50,6 +69,11 @@ void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 
 void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 {
+	if (HealthBarWidget)
+	{
+		HealthBarWidget->SetVisibility(true);	
+	}
+	
 	if (Attributes && Attributes->IsAlive())
 	{
 		DirectionalHitReact(ImpactPoint);
@@ -72,50 +96,21 @@ void AEnemy::GetHit_Implementation(const FVector& ImpactPoint)
 
 void AEnemy::Die()
 {
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+	PlayDeathMontage();
 
-	if (AnimInstance == nullptr || DeathMontage == nullptr) return;
-	
-	AnimInstance->Montage_Play(DeathMontage);
-	const int32 Selection = FMath::RandRange(0, 5);
-	FName SectionName = FName();
-
-	switch(Selection)
+	if (HealthBarWidget)
 	{
-	case 0:
-		SectionName = FName("Death1");
-		DeathPose = EDeathPose::EDP_Death01;
-		break;
-	case 1:
-		SectionName = FName("Death2");
-		DeathPose = EDeathPose::EDP_Death02;
-		break;
-	case 2:
-		SectionName = FName("Death3");
-		DeathPose = EDeathPose::EDP_Death03;
-		break;
-	case 3:
-		SectionName = FName("Death4");
-		DeathPose = EDeathPose::EDP_Death04;
-		break;
-	case 4:
-		SectionName = FName("Death5");
-		DeathPose = EDeathPose::EDP_Death05;
-		break;
-	case 5:
-		SectionName = FName("Death6");
-		DeathPose = EDeathPose::EDP_Death06;
-		break;
-	default:
-		SectionName = FName("Death1");
-		DeathPose = EDeathPose::EDP_Death01;
+		HealthBarWidget->SetVisibility(false);
 	}
-	AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	SetLifeSpan(3.f);
 }
 
 float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                         AActor* DamageCauser)
 {
+	CombatTarget = EventInstigator->GetPawn();
+	
 	if (Attributes && HealthBarWidget)
 	{
 		Attributes->ReceiveDamage(DamageAmount);
@@ -180,4 +175,48 @@ void AEnemy::PlayHitReactMontage(const FName& SectionName)
 	
 	AnimInstance->Montage_Play(HitReactMontage);
 	AnimInstance->Montage_JumpToSection(SectionName, HitReactMontage);
+}
+
+void AEnemy::PlayDeathMontage()
+{
+	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
+
+	if (AnimInstance == nullptr || DeathMontage == nullptr) return;
+	
+	AnimInstance->Montage_Play(DeathMontage);
+	const int32 Selection = FMath::RandRange(0, 5);
+	FName SectionName = FName();
+
+	switch(Selection)
+	{
+	case 0:
+		SectionName = FName("Death1");
+		DeathPose = EDeathPose::EDP_Death01;
+		break;
+	case 1:
+		SectionName = FName("Death2");
+		DeathPose = EDeathPose::EDP_Death02;
+		break;
+	case 2:
+		SectionName = FName("Death3");
+		DeathPose = EDeathPose::EDP_Death03;
+		break;
+	case 3:
+		SectionName = FName("Death4");
+		DeathPose = EDeathPose::EDP_Death04;
+		break;
+	case 4:
+		SectionName = FName("Death5");
+		DeathPose = EDeathPose::EDP_Death05;
+		break;
+	case 5:
+		SectionName = FName("Death6");
+		DeathPose = EDeathPose::EDP_Death06;
+		break;
+	default:
+		SectionName = FName("Death1");
+		DeathPose = EDeathPose::EDP_Death01;
+	}
+	
+	AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
 }
