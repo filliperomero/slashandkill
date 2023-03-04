@@ -8,6 +8,7 @@
 #include "Characters/CharacterTypes.h"
 #include "Enemy.generated.h"
 
+class AAIController;
 class UHealthBarComponent;
 class UAttributeComponent;
 class UAnimMontage;
@@ -28,6 +29,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 	void Die();
+	bool InTargetRange(AActor* Target, double Radius);
 
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
@@ -67,6 +69,23 @@ private:
 
 	UPROPERTY(EditAnywhere, Category = VFX)
 	TObjectPtr<UParticleSystem> HitParticle;
+
+	/**
+	 * Navigation
+	 */
+
+	UPROPERTY()
+	TObjectPtr<AAIController> EnemyController;
+
+	// Current Patrol Target
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TObjectPtr<AActor> PatrolTarget;
+
+	UPROPERTY(EditInstanceOnly, Category = "AI Navigation")
+	TArray<TObjectPtr<AActor>> PatrolTargets;
+
+	UPROPERTY(EditAnywhere)
+	double PatrolRadius = 200.f;
 	
 public:
 
