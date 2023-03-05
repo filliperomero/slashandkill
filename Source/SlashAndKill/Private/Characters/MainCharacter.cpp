@@ -43,6 +43,8 @@ void AMainCharacter::BeginPlay()
 			Subsystem->AddMappingContext(MainCharacterContext, 0);
 		}
 	}
+
+	Tags.Add(FName("MainCharacter"));
 }
 
 void AMainCharacter::Tick(float DeltaTime)

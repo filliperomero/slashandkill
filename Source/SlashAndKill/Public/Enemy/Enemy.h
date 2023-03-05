@@ -12,6 +12,7 @@ class AAIController;
 class UHealthBarComponent;
 class UAttributeComponent;
 class UAnimMontage;
+class UPawnSensingComponent;
 
 UCLASS()
 class SLASHANDKILL_API AEnemy : public ACharacter, public IHitInterface
@@ -35,6 +36,9 @@ protected:
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
 
+	UFUNCTION()
+	void PawnSeen(APawn* SeenPawn);
+
 	UPROPERTY(BlueprintReadOnly)
 	EDeathPose DeathPose = EDeathPose::EDP_Alive;
 
@@ -46,18 +50,36 @@ protected:
 	void PlayDeathMontage();
 
 private:
+	UPROPERTY()
+	TObjectPtr<AActor> CombatTarget;
+
+	UPROPERTY(EditAnywhere)
+	double CombatRadius = 500.f;
+
+	UPROPERTY(EditAnywhere)
+	double AttackRadius = 150.f;
+
+	UPROPERTY(EditAnywhere)
+	float ChaseMaxSpeed = 300.f;
+
+	UPROPERTY(EditAnywhere)
+	float WalkMaxSpeed = 150.f;
+
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+	
+	/**
+	 * Components
+	 */
+	
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttributeComponent> Attributes;
 
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UHealthBarComponent> HealthBarWidget;
 
-	UPROPERTY()
-	TObjectPtr<AActor> CombatTarget;
-
-	UPROPERTY(EditAnywhere)
-	double CombatRadius = 500.f;
-			
+	UPROPERTY(VisibleAnywhere)
+	TObjectPtr<UPawnSensingComponent> PawnSensing;
+	
 	/**
 	 * Animation Montages
 	 */
@@ -98,6 +120,7 @@ private:
 	float WaitMax = 10.f;
 
 	FTimerHandle PatrolTimer;
+	
 	void PatrolTimerFinished();
 	
 public:
