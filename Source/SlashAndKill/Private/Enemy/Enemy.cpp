@@ -221,6 +221,9 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
                          AActor* DamageCauser)
 {
 	CombatTarget = EventInstigator->GetPawn();
+	EnemyState = EEnemyState::EES_Chasing;
+	MoveToTarget(CombatTarget);
+	GetCharacterMovement()->MaxWalkSpeed = ChaseMaxSpeed;
 	
 	if (Attributes && HealthBarWidget)
 	{
