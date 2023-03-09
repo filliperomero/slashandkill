@@ -10,6 +10,7 @@
 class AAIController;
 class UHealthBarComponent;
 class UPawnSensingComponent;
+class AWeapon;
 
 UCLASS()
 class SLASHANDKILL_API AEnemy : public ABaseCharacter
@@ -22,6 +23,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
+	virtual void Destroyed() override;
 	
 protected:
 	virtual void BeginPlay() override;
@@ -61,6 +63,9 @@ private:
 	float WalkMaxSpeed = 150.f;
 
 	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+	UPROPERTY(EditAnywhere)
+	TSubclassOf<AWeapon> WeaponClass;
 	
 	/**
 	 * Components
