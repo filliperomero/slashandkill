@@ -3,7 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Character.h"
+#include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "Characters/CharacterTypes.h"
 #include "MainCharacter.generated.h"
@@ -14,10 +14,9 @@ class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
 class UAnimMontage;
-class AWeapon;
 
 UCLASS()
-class SLASHANDKILL_API AMainCharacter : public ACharacter
+class SLASHANDKILL_API AMainCharacter : public ABaseCharacter
 {
 	GENERATED_BODY()
 
@@ -26,9 +25,6 @@ public:
 	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
 protected:
 	virtual void BeginPlay() override;
@@ -58,18 +54,14 @@ protected:
 	void Move(const FInputActionValue& Value);
 	void Look(const FInputActionValue& Value);
 	void InteractPressed();
-	void Attack();
+	virtual void Attack() override;
 
 	/**
 	 * Play montage functions
 	 */
 	
-	void PlayAttackMontage();
-
-	UFUNCTION(BlueprintCallable)
-	void AttackEnd();
-
-	bool CanAttack() const;
+	virtual void AttackEnd() override;
+	virtual bool CanAttack() const override;
 
 	void PlayEquipMontage(const FName& SectionName);
 	bool CanDisarm() const;
@@ -98,17 +90,11 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
-
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	TObjectPtr<AWeapon> EquippedWeapon;
-
+	
 	/**
 	 * Animation Montages
 	 */
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> AttackMontage;
-
+	
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	TObjectPtr<UAnimMontage> EquipMontage;
 

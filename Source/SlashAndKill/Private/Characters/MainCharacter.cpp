@@ -11,7 +11,6 @@
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 #include "Animation/AnimMontage.h"
-#include "Components/BoxComponent.h"
 
 AMainCharacter::AMainCharacter()
 {
@@ -70,14 +69,6 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMainCharacter::Jump()
 {
 	Super::Jump();
-}
-
-void AMainCharacter::SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled)
-{
-	if (EquippedWeapon == nullptr || EquippedWeapon->GetWeaponBox() == nullptr) return;
-	
-	EquippedWeapon->GetWeaponBox()->SetCollisionEnabled(CollisionEnabled);
-	EquippedWeapon->IgnoreActors.Empty();
 }
 
 void AMainCharacter::InteractPressed()
@@ -147,18 +138,6 @@ void AMainCharacter::Attack()
 bool AMainCharacter::CanAttack() const
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
-}
-
-void AMainCharacter::PlayAttackMontage()
-{
-	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
-
-	if (AnimInstance == nullptr || AttackMontage == nullptr) return;
-	
-	AnimInstance->Montage_Play(AttackMontage);
-	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num() - 1);
-	const FName SectionName = AttackMontage->GetSectionName(Selection);
-	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
 }
 
 void AMainCharacter::PlayEquipMontage(const FName& SectionName)
