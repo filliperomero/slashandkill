@@ -20,7 +20,6 @@ class SLASHANDKILL_API AEnemy : public ABaseCharacter
 public:
 	AEnemy();
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Destroyed() override;
@@ -34,20 +33,26 @@ protected:
 	void MoveToTarget(AActor* Target);
 	AActor* ChoosePatrolTarget();
 	virtual void Attack() override;
+	virtual bool CanAttack() override;
+	virtual void HandleDamage(float DamageAmount) override;
 
 	UFUNCTION()
 	void PawnSeen(APawn* SeenPawn);
 
 	UPROPERTY(BlueprintReadOnly)
-	EDeathPose DeathPose = EDeathPose::EDP_Alive;
+	TEnumAsByte<EDeathPose> DeathPose;
+
+	UPROPERTY(BlueprintReadOnly)
+	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float DeathLifeSpan = 8.f;
 
 	/**
 	 * Play montage functions
 	 */
 	
-	void PlayDeathMontage();
-
-	virtual void PlayAttackMontage() override;
+	virtual int32 PlayDeathMontage() override;
 
 private:
 	UPROPERTY()
@@ -60,12 +65,10 @@ private:
 	double AttackRadius = 150.f;
 
 	UPROPERTY(EditAnywhere)
-	float ChaseMaxSpeed = 300.f;
+	float ChasingSpeed = 300.f;
 
 	UPROPERTY(EditAnywhere)
-	float WalkMaxSpeed = 150.f;
-
-	EEnemyState EnemyState = EEnemyState::EES_Patrolling;
+	float PatrollingSpeed = 125.f;
 
 	UPROPERTY(EditAnywhere)
 	TSubclassOf<AWeapon> WeaponClass;
@@ -106,7 +109,38 @@ private:
 	FTimerHandle PatrolTimer;
 	
 	void PatrolTimerFinished();
+
+	/**
+	 * AI Behavior
+	 */
 	
+	void ToggleHealthBar(const bool bShow) const;
+	void LoseInterest();
+	void StartPatrolling();
+	void ChaseTarget();
+	void ClearPatrolTimer();
+	bool IsOutsideCombatRadius();
+	bool IsOutsideAttackRadius();
+	bool IsInsideAttackRadius();
+	bool IsChasing();
+	bool IsAttacking();
+	bool IsEngaged();
+	bool IsDead();
+
+	/**
+	 * Combat
+	 */
+
+	void StartAttackTimer();
+	void ClearAttackTimer();
+
+	FTimerHandle AttackTimer;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMin = 0.5f;
+
+	UPROPERTY(EditAnywhere, Category = Combat)
+	float AttackMax = 1.f;	
 public:
 
 };

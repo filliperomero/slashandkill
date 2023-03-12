@@ -137,7 +137,7 @@ void AMainCharacter::Attack()
 	ActionState = EActionState::EAS_Attacking;
 }
 
-bool AMainCharacter::CanAttack() const
+bool AMainCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
 }

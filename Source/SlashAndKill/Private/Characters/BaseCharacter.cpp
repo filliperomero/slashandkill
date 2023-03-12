@@ -5,6 +5,8 @@
 #include "Components/BoxComponent.h"
 #include "Items/Weapons/Weapon.h"
 #include "Components/AttributeComponent.h"
+#include "Components/CapsuleComponent.h"
+#include "Kismet/GameplayStatics.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -78,7 +80,20 @@ void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint)
 	PlayHitReactMontage(SectionName);
 }
 
-bool ABaseCharacter::CanAttack() const
+bool ABaseCharacter::IsAlive()
+{
+	return Attributes && Attributes->IsAlive();
+}
+
+void ABaseCharacter::HandleDamage(float DamageAmount)
+{
+	if (Attributes)
+	{
+		Attributes->ReceiveDamage(DamageAmount);
+	}
+}
+
+bool ABaseCharacter::CanAttack()
 {
 	return false;
 }
@@ -87,16 +102,56 @@ void ABaseCharacter::AttackEnd()
 {
 }
 
-void ABaseCharacter::PlayAttackMontage()
+void ABaseCharacter::PlayHitSound(const FVector& ImpactPoint)
+{
+	if (HitSound)
+	{
+		UGameplayStatics::PlaySoundAtLocation(this, HitSound, ImpactPoint);
+	}
+}
+
+void ABaseCharacter::SpawnHitParticles(const FVector& ImpactPoint)
+{
+	if (HitParticle)
+	{
+		UGameplayStatics::SpawnEmitterAtLocation(this, HitParticle, ImpactPoint);
+	}
+}
+
+void ABaseCharacter::DisableCapsule()
+{
+	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void ABaseCharacter::PlayMontageSection(UAnimMontage* Montage, const FName SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 
-	if (AnimInstance == nullptr || AttackMontage == nullptr) return;
+	if (!AnimInstance || !Montage) return;
+
+	AnimInstance->Montage_Play(Montage);
+	AnimInstance->Montage_JumpToSection(SectionName, Montage);
+}
+
+int32 ABaseCharacter::PlayRandomMontageSection(UAnimMontage* Montage)
+{
+	if (Montage->CompositeSections.Num() <= 0) return -1;
 	
-	AnimInstance->Montage_Play(AttackMontage);
-	const int32 Selection = FMath::RandRange(0, AttackMontage->CompositeSections.Num() - 1);
-	const FName SectionName = AttackMontage->GetSectionName(Selection);
-	AnimInstance->Montage_JumpToSection(SectionName, AttackMontage);
+	const int32 Selection = FMath::RandRange(0, Montage->CompositeSections.Num() - 1);
+	const FName SectionName = Montage->GetSectionName(Selection);
+	PlayMontageSection(Montage, SectionName);
+
+	return Selection;
+}
+
+int32 ABaseCharacter::PlayAttackMontage()
+{
+	return PlayRandomMontageSection(AttackMontage);
+}
+
+int32 ABaseCharacter::PlayDeathMontage()
+{
+	return PlayRandomMontageSection(DeathMontage);
 }
 
 void ABaseCharacter::PlayHitReactMontage(const FName& SectionName)

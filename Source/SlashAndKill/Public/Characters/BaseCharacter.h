@@ -28,20 +28,30 @@ protected:
 	virtual void Attack();
 	virtual void Die();
 	virtual void DirectionalHitReact(const FVector& ImpactPoint);
+	virtual bool IsAlive();
+	virtual void HandleDamage(float DamageAmount);
 
 	UPROPERTY(VisibleAnywhere, Category = "Weapon")
 	TObjectPtr<AWeapon> EquippedWeapon;
 
-	virtual bool CanAttack() const;
+	virtual bool CanAttack();
 
 	UFUNCTION(BlueprintCallable)
 	virtual void AttackEnd();
+
+	void PlayHitSound(const FVector& ImpactPoint);
+	void SpawnHitParticles(const FVector& ImpactPoint);
+
+	void DisableCapsule();
 
 	/**
 	 * Play montage functions
 	 */
 	
-	virtual void PlayAttackMontage();
+	void virtual PlayMontageSection(UAnimMontage* Montage, const FName SectionName);
+	int32 PlayRandomMontageSection(UAnimMontage* Montage);
+	virtual int32 PlayAttackMontage();
+	virtual int32 PlayDeathMontage();
 	virtual void PlayHitReactMontage(const FName& SectionName);
 	
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
@@ -60,13 +70,13 @@ protected:
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<UAttributeComponent> Attributes;
 
+private:
+
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	TObjectPtr<USoundBase> HitSound;
 
 	UPROPERTY(EditAnywhere, Category = VFX)
 	TObjectPtr<UParticleSystem> HitParticle;
-
-private:
 
 public:	
 	
