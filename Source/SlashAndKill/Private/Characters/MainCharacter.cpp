@@ -129,6 +129,8 @@ void AMainCharacter::FinishEquipping()
 
 void AMainCharacter::Attack()
 {
+	Super::Attack();
+	
 	if (!CanAttack()) return;
 	
 	PlayAttackMontage();

@@ -114,7 +114,7 @@ void AEnemy::CheckCombatTarget()
 		// Inside Attack range, attack character
 		EnemyState = EEnemyState::EES_Attacking;
 		UE_LOG(LogTemp, Warning, TEXT("Attacking"));
-		// TODO: Attack Montage
+		Attack();
 	}
 }
 
@@ -187,7 +187,7 @@ void AEnemy::MoveToTarget(AActor* Target)
 	
 	FAIMoveRequest MoveRequest;
 	MoveRequest.SetGoalActor(Target);
-	MoveRequest.SetAcceptanceRadius(15.f);
+	MoveRequest.SetAcceptanceRadius(50.f);
 			
 	EnemyController->MoveTo(MoveRequest);
 }
@@ -210,6 +210,13 @@ AActor* AEnemy::ChoosePatrolTarget()
 	}
 
 	return nullptr;
+}
+
+void AEnemy::Attack()
+{
+	Super::Attack();
+
+	PlayAttackMontage();
 }
 
 void AEnemy::PawnSeen(APawn* SeenPawn)
@@ -295,6 +302,11 @@ void AEnemy::PlayDeathMontage()
 	}
 	
 	AnimInstance->Montage_JumpToSection(SectionName, DeathMontage);
+}
+
+void AEnemy::PlayAttackMontage()
+{
+	Super::PlayAttackMontage();
 }
 
 void AEnemy::PatrolTimerFinished()
