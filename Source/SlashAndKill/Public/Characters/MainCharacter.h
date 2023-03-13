@@ -10,6 +10,7 @@
 
 class AItem;
 class UInputMappingContext;
+class UInputComponent;
 class UInputAction;
 class USpringArmComponent;
 class UCameraComponent;
@@ -23,12 +24,35 @@ class SLASHANDKILL_API AMainCharacter : public ABaseCharacter
 public:
 	AMainCharacter();
 	virtual void Tick(float DeltaTime) override;
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
 
 protected:
 	virtual void BeginPlay() override;
+	
+	/**	Callbacks for input */
+	void Move(const FInputActionValue& Value);
+	void Look(const FInputActionValue& Value);
+	void InteractPressed();
+	virtual void Attack() override;
+	
+	/**	Combat	*/
+	virtual void AttackEnd() override;
+	virtual bool CanAttack() override;
+	bool CanDisarm() const;
+	bool CanArm() const;
+	void PlayEquipMontage(const FName& SectionName);
+	
+	UFUNCTION(BlueprintCallable)
+	void Disarm();
 
+	UFUNCTION(BlueprintCallable)
+	void Arm();
+
+	UFUNCTION(BlueprintCallable)
+	void FinishEquipping();
+
+	/** Input */
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputMappingContext> MainCharacterContext;
 
@@ -47,36 +71,8 @@ protected:
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> AttackAction;
 
-	/**
-	 * Callbacks for input
-	 */
-	
-	void Move(const FInputActionValue& Value);
-	void Look(const FInputActionValue& Value);
-	void InteractPressed();
-	virtual void Attack() override;
-
-	/**
-	 * Play montage functions
-	 */
-	
-	virtual void AttackEnd() override;
-	virtual bool CanAttack() override;
-
-	void PlayEquipMontage(const FName& SectionName);
-	bool CanDisarm() const;
-	bool CanArm() const;
-
-	UFUNCTION(BlueprintCallable)
-	void Disarm();
-
-	UFUNCTION(BlueprintCallable)
-	void Arm();
-
-	UFUNCTION(BlueprintCallable)
-	void FinishEquipping();
-
 private:
+	/** Character Components*/
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;
 
@@ -86,17 +82,15 @@ private:
 	UPROPERTY(VisibleInstanceOnly)
 	TObjectPtr<AItem> OverlappingItem;
 	
+	/**	Animation Montages */
+	
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> EquipMontage;
+
 	ECharacterState CharacterState = ECharacterState::ECS_Unequipped;
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
-	
-	/**
-	 * Animation Montages
-	 */
-	
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> EquipMontage;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
