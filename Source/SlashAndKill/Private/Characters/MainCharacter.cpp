@@ -13,7 +13,7 @@
 
 AMainCharacter::AMainCharacter()
 {
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -45,11 +45,6 @@ void AMainCharacter::BeginPlay()
 	Tags.Add(FName("MainCharacter"));
 }
 
-void AMainCharacter::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-}
-
 void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
@@ -73,27 +68,15 @@ void AMainCharacter::Jump()
 void AMainCharacter::InteractPressed()
 {
 	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
+	
 	if (OverlappingWeapon)
 	{
-		OverlappingWeapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
-		CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-		EquippedWeapon = OverlappingWeapon;
-		OverlappingItem = nullptr;
+		EquipWeapon(OverlappingWeapon);
 	}
 	else
 	{
-		if (CanDisarm())
-		{
-			PlayEquipMontage(FName("Unequip"));
-			CharacterState = ECharacterState::ECS_Unequipped;
-			ActionState = EActionState::EAS_EquippingWeapon;
-		}
-		else if (CanArm())
-		{
-			PlayEquipMontage(FName("Equip"));
-			CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
-			ActionState = EActionState::EAS_EquippingWeapon;
-		}
+		if (CanDisarm()) Disarm();
+		else if (CanArm()) Arm();
 	}
 }
 
@@ -109,12 +92,26 @@ bool AMainCharacter::CanArm() const
 
 void AMainCharacter::Disarm()
 {
+	PlayEquipMontage(FName("Unequip"));
+	CharacterState = ECharacterState::ECS_Unequipped;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void AMainCharacter::Arm()
+{
+	PlayEquipMontage(FName("Equip"));
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	ActionState = EActionState::EAS_EquippingWeapon;
+}
+
+void AMainCharacter::AttachWeaponToBack()
+{
 	if (EquippedWeapon == nullptr) return;
 
 	EquippedWeapon->AttachMeshToSocket(GetMesh(), FName("SpineSocket"));
 }
 
-void AMainCharacter::Arm()
+void AMainCharacter::AttachWeaponToHand()
 {
 	if (EquippedWeapon == nullptr) return;
 
@@ -149,6 +146,14 @@ void AMainCharacter::PlayEquipMontage(const FName& SectionName)
 	
 	AnimInstance->Montage_Play(EquipMontage);
 	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+}
+
+void AMainCharacter::EquipWeapon(AWeapon* Weapon)
+{	
+	Weapon->Equip(GetMesh(), FName("RightHandSocket"), this, this);
+	CharacterState = ECharacterState::ECS_EquippedOneHandedWeapon;
+	EquippedWeapon = Weapon;
+	OverlappingItem = nullptr;
 }
 
 void AMainCharacter::AttackEnd()

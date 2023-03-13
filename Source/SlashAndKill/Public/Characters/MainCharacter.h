@@ -23,9 +23,9 @@ class SLASHANDKILL_API AMainCharacter : public ABaseCharacter
 
 public:
 	AMainCharacter();
-	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void Jump() override;
+	
 
 protected:
 	virtual void BeginPlay() override;
@@ -37,17 +37,20 @@ protected:
 	virtual void Attack() override;
 	
 	/**	Combat	*/
+	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
 	virtual bool CanAttack() override;
 	bool CanDisarm() const;
 	bool CanArm() const;
+	void Disarm();
+	void Arm();
 	void PlayEquipMontage(const FName& SectionName);
 	
 	UFUNCTION(BlueprintCallable)
-	void Disarm();
+	void AttachWeaponToBack();
 
 	UFUNCTION(BlueprintCallable)
-	void Arm();
+	void AttachWeaponToHand();
 
 	UFUNCTION(BlueprintCallable)
 	void FinishEquipping();
