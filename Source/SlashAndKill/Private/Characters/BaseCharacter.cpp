@@ -127,7 +127,7 @@ void ABaseCharacter::DisableCapsule()
 	GetCapsuleComponent()->SetCollisionEnabled(ECollisionEnabled::NoCollision);
 }
 
-void ABaseCharacter::PlayMontageSection(UAnimMontage* Montage, const FName SectionName)
+void ABaseCharacter::PlayMontageSection(UAnimMontage* Montage, const FName& SectionName)
 {
 	UAnimInstance* AnimInstance = GetMesh()->GetAnimInstance();
 

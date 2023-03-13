@@ -19,9 +19,6 @@ class SLASHANDKILL_API ABaseCharacter : public ACharacter, public IHitInterface
 public:
 	ABaseCharacter();
 	virtual void Tick(float DeltaTime) override;
-
-	UFUNCTION(BlueprintCallable)
-	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 	
 protected:
 	virtual void BeginPlay() override;
@@ -30,39 +27,30 @@ protected:
 	virtual void DirectionalHitReact(const FVector& ImpactPoint);
 	virtual bool IsAlive();
 	virtual void HandleDamage(float DamageAmount);
-
-	UPROPERTY(VisibleAnywhere, Category = "Weapon")
-	TObjectPtr<AWeapon> EquippedWeapon;
-
-	virtual bool CanAttack();
-
-	UFUNCTION(BlueprintCallable)
-	virtual void AttackEnd();
-
 	void PlayHitSound(const FVector& ImpactPoint);
 	void SpawnHitParticles(const FVector& ImpactPoint);
-
 	void DisableCapsule();
+	virtual bool CanAttack();
 
 	/**
 	 * Play montage functions
 	 */
 	
-	void virtual PlayMontageSection(UAnimMontage* Montage, const FName SectionName);
+	virtual void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);
 	int32 PlayRandomMontageSection(UAnimMontage* Montage);
+	virtual void PlayHitReactMontage(const FName& SectionName);
 	virtual int32 PlayAttackMontage();
 	virtual int32 PlayDeathMontage();
-	virtual void PlayHitReactMontage(const FName& SectionName);
+    
+    UFUNCTION(BlueprintCallable)
+    virtual void AttackEnd();
 	
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> AttackMontage;
+	UFUNCTION(BlueprintCallable)
+	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
 
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> HitReactMontage;
-
-	UPROPERTY(EditDefaultsOnly, Category = Montages)
-	TObjectPtr<UAnimMontage> DeathMontage;
-
+	UPROPERTY(VisibleAnywhere, Category = "Weapon")
+	TObjectPtr<AWeapon> EquippedWeapon;
+	
 	/**
 	 * Components
 	 */
@@ -71,13 +59,19 @@ protected:
 	TObjectPtr<UAttributeComponent> Attributes;
 
 private:
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> AttackMontage;
 
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> HitReactMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> DeathMontage;
+	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	TObjectPtr<USoundBase> HitSound;
 
 	UPROPERTY(EditAnywhere, Category = VFX)
 	TObjectPtr<UParticleSystem> HitParticle;
-
-public:	
 	
 };
