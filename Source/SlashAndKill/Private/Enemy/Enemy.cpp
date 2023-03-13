@@ -4,14 +4,11 @@
 #include "Enemy/Enemy.h"
 #include "AIController.h"
 #include "Components/AttributeComponent.h"
-#include "Components/CapsuleComponent.h"
 #include "Components/SkeletalMeshComponent.h"
 #include "Perception/PawnSensingComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "HUD/HealthBarComponent.h"
 #include "Items/Weapons/Weapon.h"
-#include "SlashAndKill/DebugMacros.h"
-// #include "Kismet/KismetSystemLibrary.h"
 
 AEnemy::AEnemy()
 {
@@ -24,13 +21,7 @@ AEnemy::AEnemy()
 		GetMesh()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
 		GetMesh()->SetGenerateOverlapEvents(true);
 	}
-
-	if (GetCapsuleComponent())
-	{
-		GetCapsuleComponent()->SetCollisionResponseToChannel(ECollisionChannel::ECC_Camera, ECollisionResponse::ECR_Ignore);
-	}
-
-	
+		
 	HealthBarWidget = CreateDefaultSubobject<UHealthBarComponent>(TEXT("HealthBar"));
 	HealthBarWidget->SetupAttachment(GetRootComponent());
 
@@ -110,7 +101,7 @@ void AEnemy::CheckPatrolTarget()
 	if (InTargetRange(PatrolTarget, PatrolRadius))
 	{
 		PatrolTarget = ChoosePatrolTarget();
-		const float WaitTime = FMath::FRandRange(WaitMin, WaitMax);
+		const float WaitTime = FMath::FRandRange(PatrolWaitMin, PatrolWaitMax);
 		GetWorldTimerManager().SetTimer(PatrolTimer, this, &ThisClass::PatrolTimerFinished, WaitTime);
 	}
 }
