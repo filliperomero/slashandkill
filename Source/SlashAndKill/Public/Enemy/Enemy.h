@@ -30,8 +30,8 @@ protected:
 	virtual void Die() override;
 	virtual void Attack() override;
 	virtual bool CanAttack() override;
-	virtual void HandleDamage(float DamageAmount) override;
 	virtual void AttackEnd() override;
+	virtual void HandleDamage(float DamageAmount) override;
 	virtual int32 PlayDeathMontage() override;
 
 	UPROPERTY(BlueprintReadOnly)
@@ -44,7 +44,8 @@ private:
 	/**
 	 * AI Behavior
 	 */
-	
+
+	void InitializeEnemy();
 	void CheckCombatTarget();
 	void CheckPatrolTarget();
 	void PatrolTimerFinished();
@@ -58,6 +59,7 @@ private:
 	void StartPatrolling();
 	void ChaseTarget();
 	void ClearPatrolTimer();
+	void SpawnDefaultWeapon();
 	bool IsOutsideCombatRadius();
 	bool IsOutsideAttackRadius();
 	bool IsInsideAttackRadius();
