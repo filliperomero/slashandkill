@@ -36,25 +36,35 @@ void AWeapon::BeginPlay()
 
 void AWeapon::Equip(USceneComponent* InParent, FName InSocketName, AActor* NewOwner, APawn* NewInstigator)
 {
+	ItemState = EItemState::EIS_Equipped;
 	SetOwner(NewOwner);
 	SetInstigator(NewInstigator);
 	AttachMeshToSocket(InParent, InSocketName);
-	ItemState = EItemState::EIS_Equipped;
+	DisableAreaSphereCollision();
 
-	if (EquipSound)
-	{
-		UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
-	}
+	PlayEquipSound();
+	DeactivateEmbers();
+}
 
-	if (AreaSphere)
-	{
-		AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	}
+void AWeapon::PlayEquipSound()
+{
+	if (!EquipSound) return;
 
-	if (EmbersEffect)
-	{
-		EmbersEffect->Deactivate();
-	}
+	UGameplayStatics::PlaySoundAtLocation(this, EquipSound, GetActorLocation());
+}
+
+void AWeapon::DisableAreaSphereCollision()
+{
+	if (!AreaSphere) return;
+
+	AreaSphere->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+}
+
+void AWeapon::DeactivateEmbers()
+{
+	if (!EmbersEffect) return;
+
+	EmbersEffect->Deactivate();
 }
 
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)
@@ -63,20 +73,7 @@ void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocke
 	ItemMesh->AttachToComponent(InParent, TransformRules, InSocketName);
 }
 
-void AWeapon::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-                              UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	Super::OnSphereOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
-}
-
-void AWeapon::OnSphereEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	Super::OnSphereEndOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex);
-}
-
-void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+void AWeapon::WeaponBoxTrace(FHitResult& WeaponBoxHit)
 {
 	const FVector Start = TraceStartComponent->GetComponentLocation();
 	const FVector End = TraceEndComponent->GetComponentLocation();
@@ -88,43 +85,47 @@ void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActo
 	{
 		ActorsToIgnore.AddUnique(Actor);
 	}
-
-	FHitResult WeaponBoxHit;
-
+	
 	// Box Trace Single will basically trace for visibility. This is why we put any ETraceTypeQuery
 	UKismetSystemLibrary::BoxTraceSingle(
 		this,
 		Start,
 		End,
-		FVector(5.f, 5.f, 5.f),
+		WeaponBoxTraceExtent,
 		TraceStartComponent->GetComponentRotation(),
 		ETraceTypeQuery::TraceTypeQuery1,
 		false,
 		ActorsToIgnore,
-		EDrawDebugTrace::None, // EDrawDebugTrace::ForDuration => For Debug
+		bShowWeaponBoxDebug ? EDrawDebugTrace::ForDuration : EDrawDebugTrace::None,
 		WeaponBoxHit,
 		true // Ignore itself
 	);
 
+	IgnoreActors.AddUnique(WeaponBoxHit.GetActor());
+}
+
+void AWeapon::ExecuteGetHit(FHitResult& WeaponBoxHit)
+{
+	IHitInterface* HitInterface = Cast<IHitInterface>(WeaponBoxHit.GetActor());
+	// This make sure that our actor implements the interface we're checking
+	if (HitInterface)
+	{
+		// HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
+		HitInterface->Execute_GetHit(WeaponBoxHit.GetActor(), WeaponBoxHit.ImpactPoint);
+	}
+}
+
+void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	FHitResult WeaponBoxHit;
+
+	WeaponBoxTrace(WeaponBoxHit);
+	
 	if (WeaponBoxHit.GetActor())
 	{
-		UGameplayStatics::ApplyDamage(
-			WeaponBoxHit.GetActor(),
-			Damage,
-			GetInstigator()->GetController(),
-			this,
-			UDamageType::StaticClass()
-		);
-		
-		IHitInterface* HitInterface = Cast<IHitInterface>(WeaponBoxHit.GetActor());
-		// This make sure that our actor implements the interface we're checking
-		if (HitInterface)
-		{
-			// HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
-			HitInterface->Execute_GetHit(WeaponBoxHit.GetActor(), WeaponBoxHit.ImpactPoint);
-		}
-		IgnoreActors.AddUnique(WeaponBoxHit.GetActor());
-
+		UGameplayStatics::ApplyDamage(WeaponBoxHit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());
+		ExecuteGetHit(WeaponBoxHit);
 		CreateFields(WeaponBoxHit.ImpactPoint);
 	}
 }
