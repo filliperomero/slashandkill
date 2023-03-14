@@ -115,15 +115,25 @@ void AWeapon::ExecuteGetHit(FHitResult& WeaponBoxHit)
 	}
 }
 
+bool AWeapon::ActorIsSameType(AActor* OtherActor)
+{
+	if (!OtherActor) return false;
+	
+	return GetOwner()->ActorHasTag(FName("Enemy")) && OtherActor->ActorHasTag(FName("Enemy"));
+}
+
 void AWeapon::OnWeaponBoxOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                  UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	if (ActorIsSameType(OtherActor)) return;
+	
 	FHitResult WeaponBoxHit;
-
 	WeaponBoxTrace(WeaponBoxHit);
 	
 	if (WeaponBoxHit.GetActor())
 	{
+		if (ActorIsSameType(WeaponBoxHit.GetActor())) return;
+		
 		UGameplayStatics::ApplyDamage(WeaponBoxHit.GetActor(), Damage, GetInstigator()->GetController(), this, UDamageType::StaticClass());
 		ExecuteGetHit(WeaponBoxHit);
 		CreateFields(WeaponBoxHit.ImpactPoint);

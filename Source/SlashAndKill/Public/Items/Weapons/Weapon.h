@@ -55,6 +55,7 @@ private:
 	void DeactivateEmbers();
 	void WeaponBoxTrace(FHitResult& WeaponBoxHit);
 	void ExecuteGetHit(FHitResult& WeaponBoxHit);
+	bool ActorIsSameType(AActor* OtherActor);
 
 	UPROPERTY(EditAnywhere, Category = "Weapon Properties")
 	FVector WeaponBoxTraceExtent = FVector(5.f);
