@@ -69,6 +69,8 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 void AMainCharacter::GetHit_Implementation(const FVector& ImpactPoint)
 {
 	Super::GetHit_Implementation(ImpactPoint);
+
+	ActionState = EActionState::EAS_HitReaction;
 }
 
 void AMainCharacter::Jump()
@@ -130,6 +132,11 @@ void AMainCharacter::AttachWeaponToHand()
 }
 
 void AMainCharacter::FinishEquipping()
+{
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AMainCharacter::HitReactEnd()
 {
 	ActionState = EActionState::EAS_Unoccupied;
 }
