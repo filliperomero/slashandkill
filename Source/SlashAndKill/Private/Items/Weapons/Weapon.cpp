@@ -111,7 +111,7 @@ void AWeapon::ExecuteGetHit(FHitResult& WeaponBoxHit)
 	if (HitInterface)
 	{
 		// HitInterface->GetHit(WeaponBoxHit.ImpactPoint);
-		HitInterface->Execute_GetHit(WeaponBoxHit.GetActor(), WeaponBoxHit.ImpactPoint);
+		HitInterface->Execute_GetHit(WeaponBoxHit.GetActor(), WeaponBoxHit.ImpactPoint, GetOwner());
 	}
 }
 

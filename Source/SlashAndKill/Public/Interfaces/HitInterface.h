@@ -25,5 +25,5 @@ public:
 	// Setting to 0 Makes the function a pure virtual function, which is a function that cannot be implemented in the class in which it was declared
 	// virtual void GetHit(const FVector& ImpactPoint) = 0;
 	UFUNCTION(BlueprintNativeEvent)
-	void GetHit(const FVector& ImpactPoint);
+	void GetHit(const FVector& ImpactPoint, AActor* Hitter);
 };

@@ -24,9 +24,9 @@ void ABaseCharacter::BeginPlay()
 	Super::BeginPlay();
 }
 
-void ABaseCharacter::GetHit_Implementation(const FVector& ImpactPoint)
+void ABaseCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter)
 {
-	if (IsAlive()) DirectionalHitReact(ImpactPoint);
+	if (IsAlive() && Hitter) DirectionalHitReact(Hitter->GetActorLocation());
 	else Die();
 
 	PlayHitSound(ImpactPoint);

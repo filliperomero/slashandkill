@@ -24,7 +24,7 @@ class SLASHANDKILL_API AMainCharacter : public ABaseCharacter
 public:
 	AMainCharacter();
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
-	virtual void GetHit_Implementation(const FVector& ImpactPoint) override;
+	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual void Jump() override;
 	
 
