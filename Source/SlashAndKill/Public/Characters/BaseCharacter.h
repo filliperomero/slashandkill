@@ -33,14 +33,12 @@ protected:
 	void DisableCapsule();
 	virtual bool CanAttack();
 
-	/**
-	 * Play montage functions
-	 */
-	
+	/** Play montage functions */
 	virtual void PlayMontageSection(UAnimMontage* Montage, const FName& SectionName);
 	int32 PlayRandomMontageSection(UAnimMontage* Montage);
 	virtual void PlayHitReactMontage(const FName& SectionName);
 	virtual int32 PlayAttackMontage();
+	void StopAttackMontage();
 	virtual int32 PlayDeathMontage();
     
     UFUNCTION(BlueprintCallable)
