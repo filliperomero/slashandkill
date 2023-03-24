@@ -74,6 +74,14 @@ void AMainCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* H
 	ActionState = EActionState::EAS_HitReaction;
 }
 
+float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
+	AActor* DamageCauser)
+{
+	HandleDamage(DamageAmount);
+	
+	return DamageAmount;
+}
+
 void AMainCharacter::Jump()
 {
 	Super::Jump();
@@ -103,7 +111,7 @@ bool AMainCharacter::CanArm() const
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState == ECharacterState::ECS_Unequipped && EquippedWeapon;
 }
-
+ 
 void AMainCharacter::Disarm()
 {
 	PlayEquipMontage(FName("Unequip"));
