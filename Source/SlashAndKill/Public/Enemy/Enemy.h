@@ -84,7 +84,7 @@ private:
 	double CombatRadius = 1000.f;
 
 	UPROPERTY(EditAnywhere)
-	double AttackRadius = 150.f;
+	double AttackRadius = 200.f;
 	
 	UPROPERTY()
 	TObjectPtr<AAIController> EnemyController;
