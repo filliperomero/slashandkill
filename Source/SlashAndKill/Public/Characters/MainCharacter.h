@@ -8,6 +8,7 @@
 #include "Characters/CharacterTypes.h"
 #include "MainCharacter.generated.h"
 
+class USlashOverlay;
 class AItem;
 class UInputMappingContext;
 class UInputComponent;
@@ -79,6 +80,9 @@ protected:
 	TObjectPtr<UInputAction> AttackAction;
 
 private:
+	void InitializeSlashOverlay(const APlayerController* PlayerController);
+	void SetHUDHealth();
+	
 	/** Character Components*/
 	UPROPERTY(VisibleAnywhere)
 	TObjectPtr<USpringArmComponent> CameraBoom;
@@ -98,6 +102,9 @@ private:
 
 	UPROPERTY(BlueprintReadWrite, meta = (AllowPrivateAccess = "true"))
 	EActionState ActionState = EActionState::EAS_Unoccupied;
+
+	UPROPERTY()
+	TObjectPtr<USlashOverlay> SlashOverlay;
 
 public:
 	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }

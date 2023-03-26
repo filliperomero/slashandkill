@@ -6,8 +6,11 @@
 #include "EnhancedInputSubsystems.h"
 #include "Components/InputComponent.h"
 #include "Camera/CameraComponent.h"
+#include "Components/AttributeComponent.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "HUD/MainHUD.h"
+#include "HUD/SlashOverlay.h"
 #include "Items/Item.h"
 #include "Items/Weapons/Weapon.h"
 
@@ -46,6 +49,8 @@ void AMainCharacter::BeginPlay()
 		{
 			Subsystem->AddMappingContext(MainCharacterContext, 0);
 		}
+
+		InitializeSlashOverlay(PlayerController);
 	}
 
 	Tags.Add(FName("EngageableTarget"));
@@ -75,15 +80,18 @@ void AMainCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* H
 }
 
 float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
-	AActor* DamageCauser)
+                                 AActor* DamageCauser)
 {
 	HandleDamage(DamageAmount);
+	SetHUDHealth();
 	
 	return DamageAmount;
 }
 
 void AMainCharacter::Jump()
 {
+	if (ActionState != EActionState::EAS_Unoccupied) return;
+	
 	Super::Jump();
 }
 
@@ -219,4 +227,31 @@ void AMainCharacter::Look(const FInputActionValue& Value)
 	
 	AddControllerYawInput(LookAxisValue.X);
 	AddControllerPitchInput(LookAxisValue.Y);
+}
+
+void AMainCharacter::InitializeSlashOverlay(const APlayerController* PlayerController)
+{
+	if (PlayerController == nullptr) return;
+	
+	AMainHUD* MainHUD = Cast<AMainHUD>(PlayerController->GetHUD());
+	if (MainHUD)
+	{
+		SlashOverlay = MainHUD->GetSlashOverlay();
+
+		if (SlashOverlay && Attributes)
+		{
+			SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+			SlashOverlay->SetStaminaBarPercent(1.f);
+			SlashOverlay->SetGold(0);
+			SlashOverlay->SetSouls(0);
+		}
+	}
+}
+
+void AMainCharacter::SetHUDHealth()
+{
+	if (SlashOverlay && Attributes)
+	{
+		SlashOverlay->SetHealthBarPercent(Attributes->GetHealthPercent());
+	}
 }
