@@ -76,7 +76,8 @@ void AMainCharacter::GetHit_Implementation(const FVector& ImpactPoint, AActor* H
 	Super::GetHit_Implementation(ImpactPoint, Hitter);
 
 	SetWeaponCollisionEnabled(ECollisionEnabled::NoCollision);
-	ActionState = EActionState::EAS_HitReaction;
+	if (Attributes && Attributes->GetHealthPercent() > 0.f)
+		ActionState = EActionState::EAS_HitReaction;
 }
 
 float AMainCharacter::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator,
@@ -181,6 +182,13 @@ void AMainCharacter::PlayEquipMontage(const FName& SectionName)
 	
 	AnimInstance->Montage_Play(EquipMontage);
 	AnimInstance->Montage_JumpToSection(SectionName, EquipMontage);
+}
+
+void AMainCharacter::Die()
+{
+	Super::Die();
+	DisableCapsule();
+	ActionState = EActionState::EAS_Dead;
 }
 
 void AMainCharacter::EquipWeapon(AWeapon* Weapon)

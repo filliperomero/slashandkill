@@ -7,6 +7,7 @@
 #include "Components/AttributeComponent.h"
 #include "Components/CapsuleComponent.h"
 #include "Kismet/GameplayStatics.h"
+#include "Characters/CharacterTypes.h"
 
 ABaseCharacter::ABaseCharacter()
 {
@@ -44,6 +45,7 @@ void ABaseCharacter::Attack()
 
 void ABaseCharacter::Die()
 {
+	PlayDeathMontage();
 }
 
 void ABaseCharacter::DirectionalHitReact(const FVector& ImpactPoint)
@@ -173,7 +175,15 @@ void ABaseCharacter::StopAttackMontage()
 
 int32 ABaseCharacter::PlayDeathMontage()
 {
-	return PlayRandomMontageSection(DeathMontage);
+	const int32 Selection = PlayRandomMontageSection(DeathMontage);
+	TEnumAsByte<EDeathPose> Pose(Selection);
+
+	if (Pose < EDeathPose::EDP_MAX)
+	{
+		DeathPose = Pose;
+	}
+	
+	return Selection;
 }
 
 FVector ABaseCharacter::GetTranslationWarpTarget()
