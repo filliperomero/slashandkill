@@ -62,9 +62,9 @@ void AWeapon::DisableAreaSphereCollision()
 
 void AWeapon::DeactivateEmbers()
 {
-	if (!EmbersEffect) return;
+	if (!ItemEffect) return;
 
-	EmbersEffect->Deactivate();
+	ItemEffect->Deactivate();
 }
 
 void AWeapon::AttachMeshToSocket(USceneComponent* InParent, const FName& InSocketName)

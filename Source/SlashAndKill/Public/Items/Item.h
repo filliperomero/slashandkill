@@ -55,7 +55,7 @@ protected:
 	EItemState ItemState = EItemState::EIS_Hovering;
 
 	UPROPERTY(EditAnywhere, Category = "VFX")
-	TObjectPtr<UNiagaraComponent> EmbersEffect;
+	TObjectPtr<UNiagaraComponent> ItemEffect;
 
 private:
 	UFUNCTION(BlueprintPure)
@@ -71,10 +71,10 @@ public:
 	UPROPERTY(VisibleInstanceOnly)
 	float RunningTime { 0.f };
 
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float Amplitude { 0.25f };
 
-	UPROPERTY(EditInstanceOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sine Parameters")
 	float TimeConstant { 5.f };
 };
 

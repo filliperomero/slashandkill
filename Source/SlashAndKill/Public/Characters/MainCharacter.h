@@ -6,10 +6,12 @@
 #include "BaseCharacter.h"
 #include "InputActionValue.h"
 #include "Characters/CharacterTypes.h"
+#include "Interfaces/PickupInterface.h"
 #include "MainCharacter.generated.h"
 
 class USlashOverlay;
 class AItem;
+class ASoul;
 class UInputMappingContext;
 class UInputComponent;
 class UInputAction;
@@ -18,7 +20,7 @@ class UCameraComponent;
 class UAnimMontage;
 
 UCLASS()
-class SLASHANDKILL_API AMainCharacter : public ABaseCharacter
+class SLASHANDKILL_API AMainCharacter : public ABaseCharacter, public IPickupInterface
 {
 	GENERATED_BODY()
 
@@ -28,6 +30,8 @@ public:
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 	virtual void Jump() override;
+	virtual void SetOverlappingItem(AItem* Item) override;
+	virtual void AddSouls(ASoul* Soul) override;
 
 protected:
 	virtual void BeginPlay() override;
@@ -108,7 +112,6 @@ private:
 	TObjectPtr<USlashOverlay> SlashOverlay;
 
 public:
-	FORCEINLINE void SetOverlappingItem(AItem* Item) { OverlappingItem = Item; }
 	FORCEINLINE ECharacterState GetCharacterState() const { return CharacterState; }
 	FORCEINLINE EActionState GetActionState() const { return ActionState; }
 	

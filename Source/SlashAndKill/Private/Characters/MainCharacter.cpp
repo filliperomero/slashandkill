@@ -96,6 +96,16 @@ void AMainCharacter::Jump()
 	Super::Jump();
 }
 
+void AMainCharacter::SetOverlappingItem(AItem* Item)
+{
+	OverlappingItem = Item;
+}
+
+void AMainCharacter::AddSouls(ASoul* SoulAmount)
+{
+	SlashOverlay->SetSouls(1);
+}
+
 void AMainCharacter::InteractPressed()
 {
 	AWeapon* OverlappingWeapon = Cast<AWeapon>(OverlappingItem);
