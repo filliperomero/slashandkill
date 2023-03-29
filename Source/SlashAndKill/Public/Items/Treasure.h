@@ -33,4 +33,5 @@ private:
 	int32 GoldAmount { 0 };
 
 public:
+	FORCEINLINE int32 GetGoldAmount() const { return GoldAmount; }
 };

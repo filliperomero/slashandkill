@@ -12,6 +12,8 @@
 #include "HUD/MainHUD.h"
 #include "HUD/SlashOverlay.h"
 #include "Items/Item.h"
+#include "Items/Soul.h"
+#include "Items/Treasure.h"
 #include "Items/Weapons/Weapon.h"
 
 AMainCharacter::AMainCharacter()
@@ -101,9 +103,22 @@ void AMainCharacter::SetOverlappingItem(AItem* Item)
 	OverlappingItem = Item;
 }
 
-void AMainCharacter::AddSouls(ASoul* SoulAmount)
+void AMainCharacter::AddSouls(ASoul* Soul)
 {
-	SlashOverlay->SetSouls(1);
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->AddSouls(Soul->GetSoulsAmount());
+		SlashOverlay->SetSouls(Attributes->GetSouls());
+	}
+}
+
+void AMainCharacter::AddGold(ATreasure* Treasure)
+{
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->AddGold(Treasure->GetGoldAmount());
+		SlashOverlay->SetGold(Attributes->GetGold());
+	}
 }
 
 void AMainCharacter::InteractPressed()

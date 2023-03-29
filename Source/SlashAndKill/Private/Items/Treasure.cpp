@@ -2,7 +2,7 @@
 
 
 #include "Items/Treasure.h"
-#include "Characters/MainCharacter.h"
+#include "Interfaces/PickupInterface.h"
 
 void ATreasure::BeginPlay()
 {
@@ -14,10 +14,12 @@ void ATreasure::BeginPlay()
 void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
                                 UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
-	if (MainCharacter)
+	IPickupInterface* PickupInterface = Cast<IPickupInterface>(OtherActor);
+	if (PickupInterface)
 	{
+		PickupInterface->AddGold(this);
+		
 		SpawnPickupSound();
 		Destroy();
-	}
+	}	
 }
