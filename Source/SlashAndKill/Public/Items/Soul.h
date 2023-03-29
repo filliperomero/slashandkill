@@ -6,6 +6,7 @@
 #include "Items/Item.h"
 #include "Soul.generated.h"
 
+class UNiagaraSystem;
 /**
  * 
  */
@@ -32,5 +33,7 @@ protected:
 		UPrimitiveComponent* OtherComp,
 		int32 OtherBodyIndex
 	) override;
+
+private:
 	
 };

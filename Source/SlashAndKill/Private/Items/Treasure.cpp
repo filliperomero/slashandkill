@@ -3,7 +3,6 @@
 
 #include "Items/Treasure.h"
 #include "Characters/MainCharacter.h"
-#include "Kismet/GameplayStatics.h"
 
 void ATreasure::BeginPlay()
 {
@@ -18,9 +17,7 @@ void ATreasure::OnSphereOverlap(UPrimitiveComponent* OverlappedComponent, AActor
 	AMainCharacter* MainCharacter = Cast<AMainCharacter>(OtherActor);
 	if (MainCharacter)
 	{
-		if (PickupSound)
-			UGameplayStatics::PlaySoundAtLocation(this, PickupSound, GetActorLocation());
-		
+		SpawnPickupSound();
 		Destroy();
 	}
 }

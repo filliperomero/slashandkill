@@ -8,6 +8,7 @@
 
 class UNiagaraComponent;
 class USphereComponent;
+class UNiagaraSystem;
 
 enum class EItemState : uint8
 {
@@ -46,6 +47,9 @@ protected:
 		int32 OtherBodyIndex
 	);
 
+	virtual void SpawnPickupSystem();
+	virtual void SpawnPickupSound();
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UStaticMeshComponent> ItemMesh;
 
@@ -54,7 +58,7 @@ protected:
 
 	EItemState ItemState = EItemState::EIS_Hovering;
 
-	UPROPERTY(EditAnywhere, Category = "VFX")
+	UPROPERTY(EditAnywhere)
 	TObjectPtr<UNiagaraComponent> ItemEffect;
 
 private:
@@ -66,6 +70,12 @@ private:
 
 	template<typename T>
 	T Avg(T First, T Second);
+	
+	UPROPERTY(EditAnywhere, Category = "VFX")
+	TObjectPtr<UNiagaraSystem> PickupEffect;
+
+	UPROPERTY(EditAnywhere, Category = "Sound")
+	TObjectPtr<USoundBase> PickupSound;
 
 public:
 	UPROPERTY(VisibleInstanceOnly)
