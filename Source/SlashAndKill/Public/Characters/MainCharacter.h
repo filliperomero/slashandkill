@@ -43,10 +43,12 @@ protected:
 	void Look(const FInputActionValue& Value);
 	void InteractPressed();
 	virtual void Attack() override;
+	void Dodge();
 	
 	/**	Combat	*/
 	void EquipWeapon(AWeapon* Weapon);
 	virtual void AttackEnd() override;
+	virtual void DodgeEnd() override;
 	virtual bool CanAttack() override;
 	bool CanDisarm() const;
 	bool CanArm() const;
@@ -85,6 +87,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, Category = "Input")
 	TObjectPtr<UInputAction> AttackAction;
+
+	UPROPERTY(EditAnywhere, Category = "Input")
+	TObjectPtr<UInputAction> DodgeAction;
 
 private:
 	void InitializeSlashOverlay(const APlayerController* PlayerController);

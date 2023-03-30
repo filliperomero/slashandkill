@@ -41,6 +41,7 @@ protected:
 	virtual int32 PlayAttackMontage();
 	void StopAttackMontage();
 	virtual int32 PlayDeathMontage();
+	virtual void PlayDodgeMontage();
 
 	UFUNCTION(BlueprintCallable)
 	FVector GetTranslationWarpTarget();
@@ -50,6 +51,9 @@ protected:
     
     UFUNCTION(BlueprintCallable)
     virtual void AttackEnd();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void DodgeEnd();
 	
 	UFUNCTION(BlueprintCallable)
 	void SetWeaponCollisionEnabled(ECollisionEnabled::Type CollisionEnabled);
@@ -82,6 +86,9 @@ private:
 
 	UPROPERTY(EditDefaultsOnly, Category = Montages)
 	TObjectPtr<UAnimMontage> DeathMontage;
+
+	UPROPERTY(EditDefaultsOnly, Category = Montages)
+	TObjectPtr<UAnimMontage> DodgeMontage;
 	
 	UPROPERTY(EditAnywhere, Category = Sounds)
 	TObjectPtr<USoundBase> HitSound;

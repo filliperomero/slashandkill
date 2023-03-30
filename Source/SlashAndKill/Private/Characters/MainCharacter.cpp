@@ -70,6 +70,7 @@ void AMainCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 		EnhancedInputComponent->BindAction(JumpAction, ETriggerEvent::Triggered, this, &ThisClass::Jump);
 		EnhancedInputComponent->BindAction(InteractAction, ETriggerEvent::Triggered, this, &ThisClass::InteractPressed);
 		EnhancedInputComponent->BindAction(AttackAction, ETriggerEvent::Triggered, this, &AMainCharacter::Attack);
+		EnhancedInputComponent->BindAction(DodgeAction, ETriggerEvent::Triggered, this, &AMainCharacter::Dodge);
 	}
 }
 
@@ -194,6 +195,14 @@ void AMainCharacter::Attack()
 	ActionState = EActionState::EAS_Attacking;
 }
 
+void AMainCharacter::Dodge()
+{
+	if (ActionState != EActionState::EAS_Unoccupied) return;
+
+	ActionState = EActionState::EAS_Dodge;
+	PlayDodgeMontage();
+}
+
 bool AMainCharacter::CanAttack()
 {
 	return ActionState == EActionState::EAS_Unoccupied && CharacterState != ECharacterState::ECS_Unequipped;
@@ -226,6 +235,13 @@ void AMainCharacter::EquipWeapon(AWeapon* Weapon)
 
 void AMainCharacter::AttackEnd()
 {
+	ActionState = EActionState::EAS_Unoccupied;
+}
+
+void AMainCharacter::DodgeEnd()
+{
+	Super::DodgeEnd();
+
 	ActionState = EActionState::EAS_Unoccupied;
 }
 
