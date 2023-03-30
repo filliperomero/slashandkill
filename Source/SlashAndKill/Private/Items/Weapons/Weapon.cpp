@@ -80,6 +80,7 @@ void AWeapon::WeaponBoxTrace(FHitResult& WeaponBoxHit)
 
 	TArray<AActor*> ActorsToIgnore;
 	ActorsToIgnore.Add(this); // Ignore itself
+	ActorsToIgnore.Add(GetOwner());
 
 	for (AActor* Actor : IgnoreActors)
 	{

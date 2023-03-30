@@ -33,4 +33,5 @@ private:
 
 public:
 	FORCEINLINE int32 GetSoulsAmount() const { return SoulsAmount; }
+	FORCEINLINE void SetSouls(int32 NumberOfSouls) { SoulsAmount = NumberOfSouls; }
 };

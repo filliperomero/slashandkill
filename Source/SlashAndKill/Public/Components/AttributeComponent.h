@@ -26,10 +26,10 @@ private:
 	UPROPERTY(EditAnywhere, Category = Attributes)
 	float MaxHealth { 100.f };
 
-	UPROPERTY(VisibleAnywhere, Category = Attributes)
+	UPROPERTY(EditAnywhere, Category = Attributes)
 	int32 Gold { 0 };
 
-	UPROPERTY(VisibleAnywhere, Category = Attributes)
+	UPROPERTY(EditAnywhere, Category = Attributes)
 	int32 Souls { 0 };
 
 public:
