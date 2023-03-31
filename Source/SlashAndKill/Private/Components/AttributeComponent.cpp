@@ -30,7 +30,7 @@ void UAttributeComponent::ReceiveDamage(float Damage)
 }
 
 float UAttributeComponent::GetHealthPercent() const
-{
+{	
 	return Health / MaxHealth;
 }
 
