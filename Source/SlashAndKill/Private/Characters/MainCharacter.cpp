@@ -18,7 +18,7 @@
 
 AMainCharacter::AMainCharacter()
 {
-	PrimaryActorTick.bCanEverTick = false;
+	PrimaryActorTick.bCanEverTick = true;
 	
 	bUseControllerRotationPitch = false;
 	bUseControllerRotationYaw = false;
@@ -39,6 +39,17 @@ AMainCharacter::AMainCharacter()
 
 	FollowCamera = CreateDefaultSubobject<UCameraComponent>(TEXT("FollowCamera"));
 	FollowCamera->SetupAttachment(CameraBoom);
+}
+
+void AMainCharacter::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+
+	if (Attributes && SlashOverlay)
+	{
+		Attributes->RegenStamina(DeltaTime);
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	}
 }
 
 void AMainCharacter::BeginPlay()
@@ -197,8 +208,12 @@ void AMainCharacter::Attack()
 
 void AMainCharacter::Dodge()
 {
-	if (ActionState != EActionState::EAS_Unoccupied) return;
+	if (ActionState != EActionState::EAS_Unoccupied || !HasEnoughStamina()) return;
 
+	Attributes->UseStamina(Attributes->GetDodgeCost());
+	if (SlashOverlay)
+		SlashOverlay->SetStaminaBarPercent(Attributes->GetStaminaPercent());
+	
 	ActionState = EActionState::EAS_Dodge;
 	PlayDodgeMontage();
 }
@@ -223,6 +238,11 @@ void AMainCharacter::Die()
 	Super::Die();
 	DisableCapsule();
 	ActionState = EActionState::EAS_Dead;
+}
+
+bool AMainCharacter::HasEnoughStamina()
+{
+	return Attributes && Attributes->GetStamina() > Attributes->GetDodgeCost();
 }
 
 void AMainCharacter::EquipWeapon(AWeapon* Weapon)

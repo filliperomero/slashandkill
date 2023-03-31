@@ -27,6 +27,7 @@ class SLASHANDKILL_API AMainCharacter : public ABaseCharacter, public IPickupInt
 
 public:
 	AMainCharacter();
+	virtual void Tick(float DeltaTime) override;
 	virtual void SetupPlayerInputComponent(UInputComponent* PlayerInputComponent) override;
 	virtual void GetHit_Implementation(const FVector& ImpactPoint, AActor* Hitter) override;
 	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
@@ -56,6 +57,7 @@ protected:
 	void Arm();
 	void PlayEquipMontage(const FName& SectionName);
 	virtual void Die() override;
+	bool HasEnoughStamina();
 	
 	UFUNCTION(BlueprintCallable)
 	void AttachWeaponToBack();
