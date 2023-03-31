@@ -16,8 +16,10 @@ class SLASHANDKILL_API ASoul : public AItem
 	GENERATED_BODY()
 
 public:
+	virtual void Tick(float DeltaTime) override;
 
 protected:
+	virtual void BeginPlay() override;
 	virtual void OnSphereOverlap(
 		UPrimitiveComponent* OverlappedComponent,
 		AActor* OtherActor,
@@ -30,6 +32,11 @@ protected:
 private:
 	UPROPERTY(EditAnywhere, Category = "Souls Properties")
 	int32 SoulsAmount { 1 };
+
+	UPROPERTY(EditAnywhere, Category = "Souls Properties")
+	float DriftRate { -15.f };
+
+	double DesiredZ { 0.f };
 
 public:
 	FORCEINLINE int32 GetSoulsAmount() const { return SoulsAmount; }
