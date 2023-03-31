@@ -139,6 +139,11 @@ void AMainCharacter::InteractPressed()
 	
 	if (OverlappingWeapon)
 	{
+		if (EquippedWeapon)
+		{
+			EquippedWeapon->Destroy();
+			
+		}
 		EquipWeapon(OverlappingWeapon);
 	}
 	else
